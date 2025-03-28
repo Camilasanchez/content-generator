@@ -1,0 +1,81 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  hasPaid       Boolean   @default(false)
+  createdAt     DateTime  @default(now()) 
+  biografia     String?
+  objetivo      String?
+  tono          String?
+  generaciones  Generacion[] // 👈 esta línea es nueva
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PromptConfig {
+  id        String   @id @default(cuid())
+  prompt    String
+  files     String?  // Usaremos JSON o una cadena separada por comas
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Generacion {
+  id        String   @id @default(cuid())
+  tema      String
+  tipo      String
+  tono      String?     // ← 👈 agrega esto
+  creadoEn  DateTime @default(now())
+  userId    String?
+  user      User? @relation(fields: [userId], references: [id])
+}
