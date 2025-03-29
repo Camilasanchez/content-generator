@@ -19,7 +19,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
-    "typeRoots": [".gitignore/node_modules/@types", "./style"],
+    "typeRoots": ["node_modules/@types"] ,
     "paths": {
       
       "@/*": [

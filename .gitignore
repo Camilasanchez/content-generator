@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+
+# Builds y caché de Next.js
+.next/
+out/
+
+# Variables de entorno
+.env*.local
+.env
+
+# Archivos del sistema
+.DS_Store
+
+# Directorios de compilación
+dist/
+build/
+
+# Configuración de IDE/Editores
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Prisma (migrations)
+/prisma/migrations
