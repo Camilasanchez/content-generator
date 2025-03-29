@@ -28,3 +28,6 @@ yarn-error.log*
 
 # Prisma (migrations)
 /prisma/migrations
+
+# Ignorar archivos grandes
+*.node
