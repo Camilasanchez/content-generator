@@ -1,4 +1,3 @@
-// app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -12,7 +11,21 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      role?: string;
+      hasPaid?: boolean; // ✅ agregado para contenido premium
     };
+  }
+
+  interface User {
+    id: string;
+    role?: string;
+    hasPaid?: boolean; // ✅ agregado para guardar estado
+  }
+
+  interface JWT {
+    sub: string;
+    role?: string;
+    hasPaid?: boolean; // ✅ agregado para mantener datos en el token
   }
 }
 
@@ -26,34 +39,38 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
+          response_type: "code",
+        },
+      },
     }),
   ],
   pages: {
     signIn: "/login",
-    error: "/login"
+    error: "/login",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        token.role = user.role;
+        token.hasPaid = user.hasPaid; // ✅ pasa el dato al token
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        session.user.role = token.role as string;
+        session.user.hasPaid = token.hasPaid as boolean; // ✅ pasa a session.user
       }
       return session;
-    }
+    },
   },
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development"
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

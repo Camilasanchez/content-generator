@@ -1,8 +1,13 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function GenerarPostPage() {
+  const { data: session } = useSession();
+  const hasPaid = session?.user?.hasPaid;
+
   const [tema, setTema] = useState('');
   const [tipo, setTipo] = useState('texto+imagen');
   const [tono, setTono] = useState('profesional');
@@ -42,10 +47,13 @@ export default function GenerarPostPage() {
     <main className="max-w-3xl mx-auto p-6 space-y-8">
       <h1 className="text-2xl font-bold text-indigo-700 mb-4">Generador IA Personalizado</h1>
 
-      <form className="space-y-4" onSubmit={(e) => {
-        e.preventDefault();
-        handleGenerar('post');
-      }}>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleGenerar('post');
+        }}
+      >
         <div>
           <label className="block text-sm font-medium mb-1">Tema del post:</label>
           <input
@@ -95,24 +103,45 @@ export default function GenerarPostPage() {
       </form>
 
       {postGenerado && (
-        <div className="bg-gray-50 p-4 rounded shadow mt-6">
+        <div className="relative bg-gray-50 p-4 rounded shadow mt-6">
           <h2 className="text-lg font-semibold mb-2 text-gray-800">📢 Tu post generado:</h2>
-          <p className="whitespace-pre-line text-gray-700">{postGenerado}</p>
-
-          <button
-            onClick={() => copiarAlPortapapeles(postGenerado)}
-            className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          <p
+            className={`whitespace-pre-line text-gray-700 ${
+              !hasPaid ? 'blur-sm hover:blur-none transition cursor-not-allowed' : ''
+            }`}
           >
-            {copiado ? '✅ ¡Copiado!' : 'Copiar post'}
-          </button>
+            {postGenerado}
+          </p>
+
+          {!hasPaid && (
+            <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center rounded text-center p-4">
+              <p className="text-gray-800 font-medium mb-3">
+                🔒 Este contenido es premium. Desbloquéalo para verlo completo.
+              </p>
+              <Link
+                href="/pago"
+                className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              >
+                Desbloquear acceso
+              </Link>
+            </div>
+          )}
+
+          {hasPaid && (
+            <button
+              onClick={() => copiarAlPortapapeles(postGenerado)}
+              className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            >
+              {copiado ? '✅ ¡Copiado!' : 'Copiar post'}
+            </button>
+          )}
         </div>
       )}
 
-      {postGenerado && (
+      {postGenerado && hasPaid && (
         <div className="mt-8 space-y-4">
           <p className="text-sm text-gray-600 italic">
             📌 Consejo: Comentar tu propio post justo después de publicarlo ayuda a activar el algoritmo de LinkedIn.
-            Le da más contexto al contenido, aumenta la interacción y mejora su alcance.
           </p>
           <button
             onClick={() => handleGenerar('comentario')}
@@ -123,16 +152,16 @@ export default function GenerarPostPage() {
         </div>
       )}
 
-      {comentarioGenerado && (
+      {comentarioGenerado && hasPaid && (
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
           <h3 className="font-semibold text-blue-800 mb-1">💬 Comentario sugerido:</h3>
           <p className="text-blue-900">{comentarioGenerado}</p>
           <button
             onClick={() => copiarAlPortapapeles(comentarioGenerado)}
-            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
-    >
-           Copiar comentario
-    </button>
+            className="bg-green-600 text-white px-3 py-1 mt-2 rounded hover:bg-green-700 transition"
+          >
+            Copiar comentario
+          </button>
         </div>
       )}
     </main>

@@ -20,7 +20,7 @@ export default function ProtectedPage() {
 
   return (
     <main className="flex flex-col items-center justify-center h-screen bg-gray-100 text-center">
-      <div className="bg-white p-8 rounded shadow">
+      <div className="bg-white p-6 rounded shadow">
         <h1 className="text-3xl font-bold mb-4">Bienvenido a tu Panel</h1>
         <p className="mb-6 text-lg">
           Hola, <strong>{session?.user?.name}</strong> 👋

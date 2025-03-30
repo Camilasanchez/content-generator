@@ -1,7 +1,8 @@
-// app/layout.tsx
+'use client';
+
 import './globals.css';
 import { Poppins } from 'next/font/google';
-import { Providers } from '@/components/providers';
+import { SessionProvider } from 'next-auth/react';
 import type { Metadata } from 'next';
 
 const poppins = Poppins({
@@ -18,7 +19,6 @@ export const metadata: Metadata = {
   },
   description: 'Generación inteligente de contenido para LinkedIn',
   keywords: ['LinkedIn', 'generador de contenido', 'marca personal'],
-  // Eliminamos themeColor de aquí
 };
 
 export default function RootLayout({
@@ -29,21 +29,20 @@ export default function RootLayout({
   return (
     <html lang="es" className={poppins.variable} suppressHydrationWarning>
       <head>
-        <link 
-          rel="icon" 
-          type="image/png" 
-          sizes="32x32" 
-          href="/favicon-32x32.png" 
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
         />
-        <link 
-          rel="apple-touch-icon" 
-          sizes="180x180" 
-          href="/apple-icon-180x180.png" 
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-icon-180x180.png"
         />
       </head>
-      
-      <body className="min-h-screen bg-gray-50 antialiased">
-        <Providers>{children}</Providers>
+      <body className="bg-gray-50 text-gray-900 font-sans">
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

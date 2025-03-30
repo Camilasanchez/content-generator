@@ -24,6 +24,7 @@ model User {
   objetivo      String?
   tono          String?
   generaciones  Generacion[] // 👈 esta línea es nueva
+  role           String    @default("user") // 👈 importante para permisos
 }
 
 model Account {
@@ -74,8 +75,11 @@ model Generacion {
   id        String   @id @default(cuid())
   tema      String
   tipo      String
-  tono      String?     // ← 👈 agrega esto
-  creadoEn  DateTime @default(now())
+  tono      String?     // opcional
   userId    String?
-  user      User? @relation(fields: [userId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+  idea      String
+  proposito String
+  resultado String
+  createdAt DateTime @default(now())
 }

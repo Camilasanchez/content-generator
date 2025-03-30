@@ -20,7 +20,7 @@ export default function MisPostsPage() {
   }, []);
 
   return (
-    <main className="p-8">
+    <main className="p-6">
       <h1 className="text-2xl font-bold">Mis Posts</h1>
       {posts.length === 0 ? (
         <p className="mt-4">No hay posts guardados</p>

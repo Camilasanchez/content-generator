@@ -2,11 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,43 +15,22 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
-    "typeRoots": ["node_modules/@types"] ,
+    "typeRoots": ["node_modules/@types"],
     "paths": {
-      
-      "@/*": [
-        "./*"
-      ],
-      "@/lib/*": [
-        "./lib/*"
-      ],
-      "@/components/*": [
-        "./components/*"
-      ],
-      "@/styles/*": [
-        "./styles/*"
-      ],
-      "@/app/*": [
-        "./app/*"
-      ]
+      "@/*": ["./*"],
+      "@/lib/*": ["./lib/*"],
+      "@/components/*": ["./components/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/app/*": ["./app/*"]
     },
-    "types": [
-      "node",
-      "jest"
-    ],
-    "esModuleInterop": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "types": ["node", "jest"]
   },
   "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
+    "types" // ✅ aquí se incluye la carpeta con tus tipos personalizados
   ],
-  "exclude": [
-    "/node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

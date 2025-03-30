@@ -2,9 +2,17 @@
 import { NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { tema } = body;
 
@@ -34,11 +42,25 @@ export async function POST(req: Request) {
     }
 
     const data = await response.json();
-    const contenido = data.choices?.[0]?.message?.content;
+    const contenido = data.choices?.[0]?.message?.content || 'No se generó contenido.';
 
-    return NextResponse.json({ resultado: contenido || 'No se generó contenido.' });
+    // Guardar en la base de datos
+    await prisma.generacion.create({
+      data: {
+        userId: session.user.id,
+        tema,
+        tipo: 'texto',       // puedes ajustarlo si tienes más tipos
+        tono: 'informativo', // puedes cambiar esto luego según lo que elija el usuario
+        idea: tema,
+        proposito: 'contenido',
+        resultado: contenido
+      }
+    });
+
+    return NextResponse.json({ resultado: contenido });
+
   } catch (error) {
-    console.error('Error al conectar con DeepSeek:', error);
+    console.error('Error al generar y guardar contenido:', error);
     return NextResponse.json(
       { error: 'Hubo un error al generar el contenido con DeepSeek.' },
       { status: 500 }

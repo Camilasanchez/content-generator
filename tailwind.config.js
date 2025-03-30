@@ -1,6 +1,5 @@
-
 // tailwind.config.js
-import { fontFamily } from "tailwindcss/defaultTheme"
+import { fontFamily } from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -13,18 +12,18 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-poppins)', 'sans-serif'],
+        sans: ['var(--font-sans)', ...fontFamily.sans], // usando Inter como fuente base
       },
       colors: {
         primary: {
           DEFAULT: "#6366f1", // Indigo-500
-          dark: "#4f46e5",   // Indigo-600
+          dark: "#4f46e5",    // Indigo-600
         },
         secondary: {
           DEFAULT: "#ec4899", // Pink-500
           dark: "#db2777"     // Pink-600
         },
-        background: "#f9fafb",
+        background: "#f9fafb", // gris muy claro
         surface: "#ffffff",
         muted: "#6b7280"
       },
@@ -37,4 +36,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};

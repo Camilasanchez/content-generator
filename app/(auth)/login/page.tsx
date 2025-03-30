@@ -23,7 +23,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md text-center">
+      <div className="bg-white p-6 rounded-lg shadow-md text-center">
         <h1 className="text-2xl font-bold mb-6">Iniciar sesión</h1>
         {loading ? (
           <p className="text-gray-600">Redirigiendo a Google...</p>

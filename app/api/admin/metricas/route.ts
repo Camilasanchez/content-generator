@@ -1,41 +1,40 @@
-// app/api/admin/metricas/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user?.role !== 'admin') {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
+  }
+
   try {
-    // Total de generaciones
     const totalGeneraciones = await prisma.generacion.count();
 
-    // Temas más usados
     const temasMasUsados = await prisma.generacion.groupBy({
       by: ['tema'],
-      _count: {
-        tema: true,
-      },
-      orderBy: {
-        _count: {
-          tema: 'desc',
-        },
-      },
+      _count: { tema: true },
+      orderBy: { _count: { tema: 'desc' } },
       take: 5,
     });
 
-    // Tono más popular
     const tonoPopularRaw = await prisma.generacion.groupBy({
       by: ['tono'],
-      _count: {
-        tono: true,
-      },
-      orderBy: {
-        _count: {
-          tono: 'desc',
-        },
-      },
+      _count: { tono: true },
+      orderBy: { _count: { tono: 'desc' } },
       take: 1,
     });
 
-    const tonoPopular = tonoPopularRaw[0]?.tono || null;
+    const porTono = await prisma.generacion.groupBy({
+      by: ['tono'],
+      _count: true,
+    });
+
+    const porProposito = await prisma.generacion.groupBy({
+      by: ['proposito'],
+      _count: true,
+    });
 
     return NextResponse.json({
       totalGeneraciones,
@@ -43,7 +42,9 @@ export async function GET() {
         tema: t.tema,
         _count: t._count.tema,
       })),
-      tonoPopular,
+      tonoPopular: tonoPopularRaw[0]?.tono || null,
+      porTono,
+      porProposito,
     });
   } catch (error) {
     console.error('Error en métricas:', error);
